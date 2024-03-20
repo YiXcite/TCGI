@@ -1,6 +1,6 @@
 # TCGI calculation
 
-1. **Start with single-year calculation checking**: "check_cal_ERA5.ipynb" runs one year of ERA5 data to check the calculation with parts of the plots. The completed output plots are available in "TCGI_singleyear_check_ERA5.pdf".
+1. **Start with single-year calculation checking**: "check_cal_ERA5.ipynb" runs one year of ERA5 data to check the calculation, providing parts of the output plots. The completed output plots are available in "TCGI_singleyear_check_ERA5.pdf".
 2. **Start calculate TCGI**: go to jupyter notebook "cal_TCGI.ipynb", which explains the calculation step by step.
 
 ## Calculation Process (ref. Camargo et al., 2014)
