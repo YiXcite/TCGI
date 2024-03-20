@@ -12,61 +12,6 @@ from dateutil.relativedelta import relativedelta
 import functions
 
 
-def search_df(df, **search):
-    "search by keywords: match exactly or match substring"
-    keys = ['activity_id', 'institution_id', 'source_id', 'experiment_id',
-            'member_id', 'table_id', 'variable_id', 'grid_label']
-    for skey in search.keys():
-        if skey == 'variable_id':
-            df = df[df[skey] == search[skey]]
-        else:
-            df = df[df[skey].str.contains(search[skey])]
-    return df
-
-def read_and_combine_netcdf(urls):
-    # Use dask to parallelize the file reading
-    dask.config.set(scheduler='threads')  # Use threads for local parallelization
-    ds = xr.open_mfdataset(urls, concat_dim='time', combine='nested', decode_times=True, parallel=True, chunks={'time': 12})
-    return ds
-
-def time_series_check(ds, start_year, end_year):
-    # Check time range & whether there's any year missing in between
-    ds_time = ds['time']
-    is_start_year_correct = (ds_time.min().dt.year.values == start_year)
-    is_end_year_correct = (ds_time.max().dt.year.values == end_year)
-    is_completed = (len(ds_time) == (end_year-start_year+1)*12)
-    
-    if is_completed and is_start_year_correct and is_end_year_correct:
-        return True
-    else:
-        print("WARNING! Time Series do not meet the criteria.")
-        return False
-
-def load_and_check_variables(variable_id, params):
-    # Unpack parameters from the dictionary
-    df = params['df']
-    experiment_id = params['experiment_id']
-    table_id = params['table_id']
-    member_id = params['member_id']
-    source_id = params['source_id']
-    start_year = params['start_year']
-    end_year = params['end_year']
-
-    my_df = search_df(df, experiment_id=experiment_id, table_id=table_id, 
-                      variable_id=variable_id, member_id=member_id, source_id=source_id)
-
-    if len(my_df) == 0:  # if there's no data
-        print(f"NO DATA: {source_id} {member_id} {experiment_id} {variable_id}")
-        return None
-
-    url_list = my_df.URL.values
-    result_ds = read_and_combine_netcdf(url_list).sel(time=slice(str(start_year), str(end_year)))
-    if time_series_check(result_ds, start_year, end_year):
-        print(f"# LOADED {source_id} {member_id} {experiment_id} {variable_id}")
-        return result_ds
-    else:
-        return None
-
 df = pd.read_csv("http://mary.ldeo.columbia.edu/catalogs/cmip6_HighResMIP_opendap.csv")
 experiments = ['hist-1950', 'highresSST-present', 'highres-future', 'highresSST-future']
 names = ['highres_hm', 'highresSST_hm', 'highres_sm', 'highresSST_sm']
@@ -95,8 +40,8 @@ for iexp, iname in zip(experiments[3:4], names[3:4]):
                   'source_id': imodel, 'start_year': start_year, 'end_year':end_year}
 
         # Load data for input variables
-        result_ds1 = load_and_check_variables('ua', params)
-        result_ds2 = load_and_check_variables('va', params)
+        result_ds1 = functions.load_and_check_variables('ua', params)
+        result_ds2 = functions.load_and_check_variables('va', params)
         if any(result_ds is None for result_ds in [result_ds1, result_ds2]):
             continue
             
