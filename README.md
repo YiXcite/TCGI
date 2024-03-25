@@ -15,7 +15,7 @@
 4. Get the annual climatology (year 1981-2010) differences between HighResMIP and ERA5 for each variable: $Correction_{var} = ERA5_{clim} – HighResMIP_{clim}$.
 5. Add $Correction_{var}$ to 5 interpolated variables from HighResMIP.
 6. Plug the coefficients from ERA5 (Calculated by Suzana) to get TCGI.
-   - $TCGI = exp(b+b_H H+b_T T+b_{\eta} \eta+b_V V+logcos\phi)$, where $b_X$ is coeffients, $H$ is Humidity factor (CRH/SD), $T$ is Potential Intensity, $V$ is vertical shear, and $\eta$ is clliped absolute vorticity.
+   - $TCGI = exp(b+b_H H+b_T T+b_{\eta} \eta+b_V V+logcos\phi)$, where $b_X$ is coeffients, $H$ is Humidity factor (CRH/SD), $T$ is Potential Intensity, $V$ is vertical shear, $\eta$ is clliped absolute vorticity, and $\phi$ is latitude.
 
 
 ## Refill the land
