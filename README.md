@@ -1,26 +1,53 @@
-# TCGI calculation
+# TCGI: Tropical Cyclone Genesis Index
 
-1. **Start with single-year calculation checking**: "check_cal_ERA5.ipynb" runs one year of ERA5 data to check the calculation, providing parts of the output plots. The completed output plots are available in "TCGI_singleyear_check_ERA5.pdf".
-2. **Start calculate TCGI**: go to jupyter notebook "cal_TCGI.ipynb", which explains the calculation step by step.
+## Instructions
 
-## Calculation Process (ref. Camargo et al., 2014)
-1. Calculate 5 variables:
-    - Clipped Absolute Vorticity @ 850 hPa $[10^{-5} s^{-1}]$: the quantity minimum $(\eta, 3.7*10^{-5})$
-    - Vertical Wind Shear between 850- & 200-hPa $[m s^{-1}]$.
-    - Column Relative Humidity [%]: (column-integrated water vapor content)/(saturated waper vapor) * 100%
-    - Saturation Deficit: (column-integrated water vapor content)-(saturated waper vapor)
-    - Potential Intensity $[m s^{-1}]$ (based on Gilford, D. M. 2020 and Gilford, D. M. 2021)
-2. For PI & CRH & SD, refill the land area. (we didn’t do this in the checking process)
-3. Interpolate to 2*2 degrees resolution, and apply the land mask.
-4. Get the annual climatology (year 1981-2010) differences between HighResMIP and ERA5 for each variable: $Correction_{var} = ERA5_{clim} – HighResMIP_{clim}$.
+1. **Initial Single-Year Calculation Check.** Execute "check_cal_ERA5.ipynb" to validate the calculation with one year of ERA5 data.
+   - Resulting plots are available in "TCGI_singleyear_check_ERA5.pdf".
+   - Output data is available in the folder "output_ERA5_2020_2deg".
+
+2. **Comprehensive TCGI Calculation.** Navigate to the "cal_TCGI.ipynb" for a step-by-step explanation of the TCGI calculation.
+
+Required Monthly ERA5 Input Data for Step 1:
+- U-component of wind at 850hPa & 200hPa
+- V-component of wind at 850hPa & 200hPa
+- Three-dimensional temperature
+- Mean sea level pressure
+- Skin temperature
+- Total column water vapor
+- Sea Surface Temperature
+- Three-dimensional specific humidity
+
+## Calculation Process (Camargo et al., 2014)
+1. Computation of five critical variables:
+    - Clipped Absolute Vorticity at 850 hPa $[10^{-5} s^{-1}]$: minimum of $(\eta)$ and $(3.7 \times 10^{-5})$.
+    - Vertical Wind Shear between 850 and 200 hPa $[m s^{-1}]$.
+    - Column Relative Humidity [\%]: ratio of column-integrated water vapor to saturated water vapor.
+    - Saturation Deficit: the difference between column-integrated water vapor and saturated water vapor.
+    - Potential Intensity $[m s^{-1}]$ following Gilford, D. M. 2020 and Gilford, D. M. 2021.
+
+2. Refill land areas for Potential Intensity, Column Relative Humidity, and Saturation Deficit after interpolation. (Explained in the next section)
+3. Interpolate data to a $2^\circ \times 2^\circ$ grid resolution and apply the land mask.
+4. Derive annual climatological differences between HighResMIP and ERA5 for each variable:
+   - $Correction_{var} = ERA5_{clim} - HighResMIP_{clim}\$.
 5. Add $Correction_{var}$ to 5 interpolated variables from HighResMIP.
-6. Plug the coefficients from ERA5 (Calculated by Suzana) to get TCGI.
-   - $TCGI = exp(b+b_H H+b_T T+b_{\eta} \eta+b_V V+logcos\phi)$, where $b_X$ is coeffients, $H$ is Humidity factor (CRH/SD), $T$ is Potential Intensity, $V$ is vertical shear, $\eta$ is clliped absolute vorticity, and $\phi$ is latitude.
+6. Insert coefficients derived from ERA5 (calculated by Suzana Camargo) to calculate TCGI:
+   - $TCGI = \exp(b+b_H H+b_T T+b_{\eta} \eta+b_V V+\log(\cos(\phi))$, where $b_X$ represents the coefficients; $H$ is the humidity factor (CRH/SD); $T$ is potential intensity; $V$ is vertical shear; $\eta$ is clipped absolute vorticity; and $\phi$ is latitude.
 
+**Note**: The use of ERA5-derived coefficients necessitates steps 4 & 5 to align model outputs with ERA5 benchmarks.
 
-## Refill the land
-PI, CRH, and SD are not meant to be used for land areas. When we change the resolution to a 2x2 degree grid, odd values can appear along the coast. To deal with this, we do the following:
+## Land Refilling Process
+PI, CRH, and SD are not meant to be used for land areas. When we change the resolution to a $2^\circ \times 2^\circ$ grid, odd values can appear along the coast. To deal with this, we do the following:
 
 At a certain latitude, we take the zonal mean climatology over the ocean region, which should be just one single value. Then fill the land at this latitude with this single value. We do this for every latitude, which helps smooth out the coastal area a bit.
 
 Figures in "TCGI_singleyear_check_ERA5.pdf" show the differences between results with and without the refill-land process, demonstrating that our adjustments only affect coastal regions.
+
+## References
+
+> Camargo, Suzana J., et al. "Testing the performance of tropical cyclone genesis indices in future climates using the HiRAM model." Journal of Climate 27.24 (2014): 9171-9196.
+
+> Gilford, D. M.: pyPI (v1.3): Tropical Cyclone Potential Intensity Calculations in Python, Geosci. Model Dev., 14, 2351–2369, https://doi.org/10.5194/gmd-14-2351-2021, 2021.
+
+> Gilford, D. M. 2020: pyPI: Potential Intensity Calculations in Python, pyPI v1.3. Zenodo. http://doi.org/10.5281/zenodo.3985975
+
