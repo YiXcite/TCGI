@@ -11,12 +11,12 @@
 Required Monthly ERA5 Input Data for Step 1:
 - U-component of wind at 850hPa & 200hPa
 - V-component of wind at 850hPa & 200hPa
-- Three-dimensional temperature
+- Temperature (3D)
 - Mean sea level pressure
 - Skin temperature
 - Total column water vapor
 - Sea Surface Temperature
-- Three-dimensional specific humidity
+- Specific humidity (3D)
 
 ## Calculation Process (Camargo et al., 2014)
 1. Computation of five critical variables:
