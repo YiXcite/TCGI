@@ -7,6 +7,12 @@
 # Last updated 8/14/2020
 #
 
+# The input data needed to run this script (ERA5 monthly data in the year 2020):
+# 1. Sea surface temperature
+# 2. Mean sea level pressure
+# 3. Temperature (3D)
+# 4. Specific humidity (3D)
+
 # setup
 import xarray as xr
 import pickle
