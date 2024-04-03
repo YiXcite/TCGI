@@ -13,9 +13,8 @@ Required Monthly ERA5 Input Data:
 - V-component of wind at 850hPa & 200hPa
 - Temperature (3D)
 - Mean sea level pressure
-- Skin temperature
 - Total column water vapor
-- Sea Surface Temperature
+- Sea Surface Temperature / Skin temperature
 - Specific humidity (3D)
 
 ## Calculation Process (Camargo et al., 2014)
