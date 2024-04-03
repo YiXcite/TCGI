@@ -8,7 +8,7 @@
 #
 
 # The input data needed to run this script (monthly data):
-# 1. Sea surface temperature
+# 1. Sea surface temperature / Skin Temperature
 # 2. Mean sea level pressure
 # 3. Temperature (3D)
 # 4. Specific humidity (3D)
